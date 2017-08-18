@@ -140,7 +140,7 @@
             content = '<' + MODAL_TOOLTIP_CONTENT_TEXT_ONLY_WRAPPER + '>\n                            ' + content + '\n                       </' + MODAL_TOOLTIP_CONTENT_TEXT_ONLY_WRAPPER + '>';
         }
 
-        return '<dialog id="' + id + '" ' + ATTR_ROLE + '="' + MODAL_TOOLTIP_ROLE + '" class="' + modalTooltipClassName + ' ' + MODAL_TOOLTIP_DIALOG_JS_CLASS + '" ' + ATTR_OPEN + ' ' + ATTR_MODAL + ' ' + ATTR_LABELLEDBY + '="' + MODAL_TOOLTIP_TITLE_ID + '">\n                  <div role="document">\n                    ' + button_close + '\n                    <div class="' + contentClassName + '">\n                      ' + title + '\n                      ' + content + '\n                    </div>\n                  </div>\n                </dialog>';
+        return '<dialog id="' + id + '" class="' + modalTooltipClassName + ' ' + MODAL_TOOLTIP_DIALOG_JS_CLASS + '" ' + ATTR_OPEN + ' ' + ATTR_MODAL + ' ' + ATTR_LABELLEDBY + '="' + MODAL_TOOLTIP_TITLE_ID + '">\n                  <div role="document">\n                    ' + button_close + '\n                    <div class="' + contentClassName + '">\n                      ' + title + '\n                      ' + content + '\n                    </div>\n                  </div>\n                </dialog>';
     };
 
     var closeModalTooltip = function closeModalTooltip(config) {

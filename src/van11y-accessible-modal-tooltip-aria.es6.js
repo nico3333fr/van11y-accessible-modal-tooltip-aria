@@ -152,7 +152,7 @@
         }
 
 
-        return `<dialog id="${id}" ${ATTR_ROLE}="${MODAL_TOOLTIP_ROLE}" class="${modalTooltipClassName} ${MODAL_TOOLTIP_DIALOG_JS_CLASS}" ${ATTR_OPEN} ${ATTR_MODAL} ${ATTR_LABELLEDBY}="${MODAL_TOOLTIP_TITLE_ID}">
+        return `<dialog id="${id}" class="${modalTooltipClassName} ${MODAL_TOOLTIP_DIALOG_JS_CLASS}" ${ATTR_OPEN} ${ATTR_MODAL} ${ATTR_LABELLEDBY}="${MODAL_TOOLTIP_TITLE_ID}">
                   <div role="document">
                     ${button_close}
                     <div class="${contentClassName}">
