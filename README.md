@@ -31,7 +31,7 @@ You may also use bower: <code>bower install van11y-accessible-modal-tooltip-aria
 
 __Option and attributes__
 
-Use data-tooltip-text or data-tooltip-content-id attributes to insert content in the dialog tooltip.
+Use `data-tooltip-text` or `data-tooltip-content-id` attributes to insert content in the dialog tooltip.
 
 - Simply put <code>class="js-tooltip"</code> on a button to activate the script.
 - Attribute <code>data-tooltip-prefix-class</code>: the prefix to all style classes of the dialog tooltip.
@@ -43,6 +43,10 @@ Use data-tooltip-text or data-tooltip-content-id attributes to insert content in
 - Attribute <code>data-tooltip-close-img</code>: a path to a valid image for the close button.
 
 Remember there are some demos, it will be easier to understand: <a href="https://van11y.net/downloads/modal-tooltip/demo/index.html">Demo of accessible modal tooltip</a>
+
+The script is launched when the page is loaded. If you need to execute it on AJAX-inserted content, you may use for example on `<div id="newContent">your modal tooltip launcher source</div>`:
+
+```van11yAccessibleModalTooltipAria(document.getElementById('newContent'));```
 
 ## Minimal styling classes
 
