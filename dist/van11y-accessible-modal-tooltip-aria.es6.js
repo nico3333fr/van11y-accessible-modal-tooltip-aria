@@ -195,8 +195,9 @@
     /**
      * Build modal tooltips for a container
      * @param  {Node} node 
+     * @param  {addListeners} boolean 
      */
-    const attach = (node) => {
+    const attach = (node, addListeners = true) => {
 
         $listModalTooltips(node)
             .forEach((modal_tooltip_node) => {
@@ -212,177 +213,182 @@
                 wrapOutside(modal_tooltip_node, wrapper);
 
             });
+
+        if (addListeners) {
+            /* listeners */
+            ['click', 'keydown']
+            .forEach(eventName => {
+
+                doc.body
+                    .addEventListener(eventName, e => {
+
+                        // click on link modal tooltip
+                        if (
+                            (hasClass(e.target, MODAL_TOOLTIP_JS_CLASS) === true) &&
+                            eventName === 'click' &&
+                            (hasClass(e.target, MODAL_TOOLTIP_IS_ACTIVE_CLASS) === false)
+                        ) {
+
+                            let modalTooltipLauncher = e.target;
+                            let modalTooltipPrefixClass = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_PREFIX_CLASS_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_PREFIX_CLASS_ATTR) + '-' : '';
+                            let modalTooltipText = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_TEXT_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_TEXT_ATTR) : '';
+                            let modalTooltipContentId = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CONTENT_ID_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CONTENT_ID_ATTR) : '';
+                            let modalTooltipTitle = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_TITLE_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_TITLE_ATTR) : '';
+                            let modalTooltipCloseText = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) : '';
+                            let modalTooltipCloseTitle = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) : modalTooltipCloseText;
+                            let modalTooltipCloseImgPath = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) : '';
+
+                            let modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
+                            // if already a modal tooltip opened, we close it
+                            if (modalTooltip) {
+                                // get launcher
+                                let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
+                                let modalTooltipContent = findById(MODAL_TOOLTIP_CONTENT_JS_ID) ? findById(MODAL_TOOLTIP_CONTENT_JS_ID).innerHTML : '';
+                                let modalTooltipFocusBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID);
+                                let modalTooltipLauncher = findById(modalTooltipFocusBackId);
+                                let contentBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID);
+
+                                // remove modal tooltip
+                                closeModalTooltip({
+                                    modalTooltip: modalTooltip,
+                                    modalTooltipContent: modalTooltipContent,
+                                    modalTooltipFocusBackId: modalTooltipFocusBackId,
+                                    contentBackId: contentBackId
+                                });
+
+                                // remove active class on launcher
+                                removeClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
+
+                            }
+
+                            // insert modal
+                            // Chrome bug
+                            setTimeout(function() {
+                                modalTooltipLauncher.insertAdjacentHTML('afterend', createModalTooltip({
+                                    modalTooltipText: modalTooltipText,
+                                    modalTooltipPrefixClass: modalTooltipPrefixClass,
+                                    modalTooltipTitle: modalTooltipTitle,
+                                    modalTooltipCloseText: modalTooltipCloseText,
+                                    modalTooltipCloseTitle: modalTooltipCloseTitle,
+                                    modalTooltipCloseImgPath: modalTooltipCloseImgPath,
+                                    modalTooltipContentId: modalTooltipContentId,
+                                    modalTooltipFocusBackId: modalTooltipLauncher.getAttribute('id')
+                                }));
+                            }, 50);
+                            // fix for Chrome bug resolution
+                            setTimeout(function() {
+                                // give focus to close button
+                                let closeButton = findById(MODAL_TOOLTIP_BUTTON_JS_ID)
+                                closeButton.focus();
+                            }, 51);
+
+                            // add class is-active to launcher
+                            addClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
+
+                            e.preventDefault();
+
+                        }
+
+
+                        // click on close button
+                        let parentButton = searchParent(e.target, MODAL_TOOLTIP_BUTTON_JS_CLASS);
+                        if (
+                            (
+                                e.target.getAttribute('id') === MODAL_TOOLTIP_BUTTON_JS_ID || parentButton !== ''
+                            ) &&
+                            eventName === 'click'
+                        ) {
+                            let modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
+                            let modalTooltipContent = findById(MODAL_TOOLTIP_CONTENT_JS_ID) ? findById(MODAL_TOOLTIP_CONTENT_JS_ID).innerHTML : '';
+                            let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
+                            let modalTooltipFocusBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID);
+                            let modalTooltipLauncher = findById(modalTooltipFocusBackId);
+                            let contentBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID);
+
+                            closeModalTooltip({
+                                modalTooltip: modalTooltip,
+                                modalTooltipContent: modalTooltipContent,
+                                modalTooltipFocusBackId: modalTooltipFocusBackId,
+                                contentBackId: contentBackId,
+                                fromId: e.target.getAttribute('id')
+                            });
+
+                            // remove class is-active on launcher and give focus to it
+                            removeClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
+                            modalTooltipLauncher.focus();
+                        }
+
+                        let parentModalTooltip = searchParent(e.target, MODAL_TOOLTIP_DIALOG_JS_CLASS);
+                        let modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
+                        // click anywhere outside modal tooltip when it is opened
+                        if (
+                            modalTooltip && eventName === 'click' && // click anywhere with a modal tooltip opened
+                            (e.target.getAttribute('id') !== MODAL_TOOLTIP_DIALOG_JS_ID && parentModalTooltip === '') // not a click in modal tooltip
+                        ) {
+                            let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
+
+                            modalTooltipButtonClose.click();
+                            if (hasClass(e.target, MODAL_TOOLTIP_IS_ACTIVE_CLASS) === true) {
+                                e.preventDefault();
+                            }
+
+                        }
+
+                        // strike a key when modal tooltip opened
+                        if (modalTooltip && eventName === 'keydown') {
+                            let modalTooltipContent = findById(MODAL_TOOLTIP_CONTENT_JS_ID) ? findById(MODAL_TOOLTIP_CONTENT_JS_ID).innerHTML : '';
+                            let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
+                            let modalTooltipFocusBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID);
+                            let contentBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID);
+                            let modalTooltipLauncher = findById(modalTooltipFocusBackId);
+                            let $listFocusables = [].slice.call(modalTooltip.querySelectorAll(FOCUSABLE_ELEMENTS_STRING));
+
+                            // esc 
+                            if (e.keyCode === 27) {
+
+                                closeModalTooltip({
+                                    modalTooltip: modalTooltip,
+                                    modalTooltipContent: modalTooltipContent,
+                                    modalTooltipFocusBackId: modalTooltipFocusBackId,
+                                    contentBackId: contentBackId
+                                });
+
+                                // remove class is-active on launcher and give focus to it
+                                removeClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
+                                modalTooltipLauncher.focus();
+                            }
+
+                            // tab or Maj Tab in modal tooltip => capture focus             
+                            if (e.keyCode === 9 && $listFocusables.indexOf(e.target) >= 0) {
+
+                                // maj-tab on first element focusable => focus on last
+                                if (e.shiftKey) {
+                                    if (e.target === $listFocusables[0]) {
+                                        $listFocusables[$listFocusables.length - 1].focus();
+                                        e.preventDefault();
+                                    }
+                                } else {
+                                    // tab on last element focusable => focus on first
+                                    if (e.target === $listFocusables[$listFocusables.length - 1]) {
+                                        $listFocusables[0].focus();
+                                        e.preventDefault();
+                                    }
+                                }
+
+                            }
+
+
+                        }
+
+
+                    }, true);
+            });
+        }
+
     };
 
 
-    /* listeners */
-    ['click', 'keydown']
-    .forEach(eventName => {
 
-        doc.body
-            .addEventListener(eventName, e => {
-
-                // click on link modal tooltip
-                if (
-                    (hasClass(e.target, MODAL_TOOLTIP_JS_CLASS) === true) &&
-                    eventName === 'click' &&
-                    (hasClass(e.target, MODAL_TOOLTIP_IS_ACTIVE_CLASS) === false)
-                ) {
-
-                    let modalTooltipLauncher = e.target;
-                    let modalTooltipPrefixClass = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_PREFIX_CLASS_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_PREFIX_CLASS_ATTR) + '-' : '';
-                    let modalTooltipText = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_TEXT_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_TEXT_ATTR) : '';
-                    let modalTooltipContentId = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CONTENT_ID_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CONTENT_ID_ATTR) : '';
-                    let modalTooltipTitle = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_TITLE_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_TITLE_ATTR) : '';
-                    let modalTooltipCloseText = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) : '';
-                    let modalTooltipCloseTitle = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) : modalTooltipCloseText;
-                    let modalTooltipCloseImgPath = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) : '';
-
-                    let modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
-                    // if already a modal tooltip opened, we close it
-                    if (modalTooltip) {
-                        // get launcher
-                        let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
-                        let modalTooltipContent = findById(MODAL_TOOLTIP_CONTENT_JS_ID) ? findById(MODAL_TOOLTIP_CONTENT_JS_ID).innerHTML : '';
-                        let modalTooltipFocusBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID);
-                        let modalTooltipLauncher = findById(modalTooltipFocusBackId);
-                        let contentBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID);
-
-                        // remove modal tooltip
-                        closeModalTooltip({
-                            modalTooltip: modalTooltip,
-                            modalTooltipContent: modalTooltipContent,
-                            modalTooltipFocusBackId: modalTooltipFocusBackId,
-                            contentBackId: contentBackId
-                        });
-
-                        // remove active class on launcher
-                        removeClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
-
-                    }
-
-                    // insert modal
-                    // Chrome bug
-                    setTimeout(function() {
-                        modalTooltipLauncher.insertAdjacentHTML('afterend', createModalTooltip({
-                            modalTooltipText: modalTooltipText,
-                            modalTooltipPrefixClass: modalTooltipPrefixClass,
-                            modalTooltipTitle: modalTooltipTitle,
-                            modalTooltipCloseText: modalTooltipCloseText,
-                            modalTooltipCloseTitle: modalTooltipCloseTitle,
-                            modalTooltipCloseImgPath: modalTooltipCloseImgPath,
-                            modalTooltipContentId: modalTooltipContentId,
-                            modalTooltipFocusBackId: modalTooltipLauncher.getAttribute('id')
-                        }));
-                    }, 50);
-                    // fix for Chrome bug resolution
-                    setTimeout(function() {
-                        // give focus to close button
-                        let closeButton = findById(MODAL_TOOLTIP_BUTTON_JS_ID)
-                        closeButton.focus();
-                    }, 51);
-
-                    // add class is-active to launcher
-                    addClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
-
-                    e.preventDefault();
-
-                }
-
-
-                // click on close button
-                let parentButton = searchParent(e.target, MODAL_TOOLTIP_BUTTON_JS_CLASS);
-                if (
-                    (
-                        e.target.getAttribute('id') === MODAL_TOOLTIP_BUTTON_JS_ID || parentButton !== ''
-                    ) &&
-                    eventName === 'click'
-                ) {
-                    let modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
-                    let modalTooltipContent = findById(MODAL_TOOLTIP_CONTENT_JS_ID) ? findById(MODAL_TOOLTIP_CONTENT_JS_ID).innerHTML : '';
-                    let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
-                    let modalTooltipFocusBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID);
-                    let modalTooltipLauncher = findById(modalTooltipFocusBackId);
-                    let contentBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID);
-
-                    closeModalTooltip({
-                        modalTooltip: modalTooltip,
-                        modalTooltipContent: modalTooltipContent,
-                        modalTooltipFocusBackId: modalTooltipFocusBackId,
-                        contentBackId: contentBackId,
-                        fromId: e.target.getAttribute('id')
-                    });
-
-                    // remove class is-active on launcher and give focus to it
-                    removeClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
-                    modalTooltipLauncher.focus();
-                }
-
-                let parentModalTooltip = searchParent(e.target, MODAL_TOOLTIP_DIALOG_JS_CLASS);
-                let modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
-                // click anywhere outside modal tooltip when it is opened
-                if (
-                    modalTooltip && eventName === 'click' && // click anywhere with a modal tooltip opened
-                    (e.target.getAttribute('id') !== MODAL_TOOLTIP_DIALOG_JS_ID && parentModalTooltip === '') // not a click in modal tooltip
-                ) {
-                    let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
-
-                    modalTooltipButtonClose.click();
-                    if (hasClass(e.target, MODAL_TOOLTIP_IS_ACTIVE_CLASS) === true) {
-                        e.preventDefault();
-                    }
-
-                }
-
-                // strike a key when modal tooltip opened
-                if (modalTooltip && eventName === 'keydown') {
-                    let modalTooltipContent = findById(MODAL_TOOLTIP_CONTENT_JS_ID) ? findById(MODAL_TOOLTIP_CONTENT_JS_ID).innerHTML : '';
-                    let modalTooltipButtonClose = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
-                    let modalTooltipFocusBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID);
-                    let contentBackId = modalTooltipButtonClose.getAttribute(MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID);
-                    let modalTooltipLauncher = findById(modalTooltipFocusBackId);
-                    let $listFocusables = [].slice.call(modalTooltip.querySelectorAll(FOCUSABLE_ELEMENTS_STRING));
-
-                    // esc 
-                    if (e.keyCode === 27) {
-
-                        closeModalTooltip({
-                            modalTooltip: modalTooltip,
-                            modalTooltipContent: modalTooltipContent,
-                            modalTooltipFocusBackId: modalTooltipFocusBackId,
-                            contentBackId: contentBackId
-                        });
-
-                        // remove class is-active on launcher and give focus to it
-                        removeClass(modalTooltipLauncher, MODAL_TOOLTIP_IS_ACTIVE_CLASS);
-                        modalTooltipLauncher.focus();
-                    }
-
-                    // tab or Maj Tab in modal tooltip => capture focus             
-                    if (e.keyCode === 9 && $listFocusables.indexOf(e.target) >= 0) {
-
-                        // maj-tab on first element focusable => focus on last
-                        if (e.shiftKey) {
-                            if (e.target === $listFocusables[0]) {
-                                $listFocusables[$listFocusables.length - 1].focus();
-                                e.preventDefault();
-                            }
-                        } else {
-                            // tab on last element focusable => focus on first
-                            if (e.target === $listFocusables[$listFocusables.length - 1]) {
-                                $listFocusables[0].focus();
-                                e.preventDefault();
-                            }
-                        }
-
-                    }
-
-
-                }
-
-
-            }, true);
-    });
 
     const onLoad = () => {
         attach();
