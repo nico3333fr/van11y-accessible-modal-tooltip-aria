@@ -41,12 +41,15 @@ Use `data-tooltip-text` or `data-tooltip-content-id` attributes to insert conten
 - Attribute <code>data-tooltip-close-text</code>: the text of the close button in your dialog tooltip.
 - Attribute <code>data-tooltip-close-title</code>: the title attribute of the close button in your dialog tooltip.
 - Attribute <code>data-tooltip-close-img</code>: a path to a valid image for the close button.
+- Attribute <code>data-tooltip-focus-toid</code>: the `id` of the element in the modal tooltip you want to give the focus to, when loading the modal tooltip (closing button if not specified).
 
 Remember there are some demos, it will be easier to understand: <a href="https://van11y.net/downloads/modal-tooltip/demo/index.html">Demo of accessible modal tooltip</a>
 
 The script is launched when the page is loaded. If you need to execute it on AJAX-inserted content, you may use for example on `<div id="newContent">your modal tooltip launcher source</div>`:
 
-```van11yAccessibleModalTooltipAria(document.getElementById('newContent'));```
+```van11yAccessibleModalTooltipAria(document.getElementById('newContent')[, addListeners]);```
+
+`addListeners` is a facultative boolean (by default set to `true`) to add modal tooltip listeners (should be set up only the first time in most of the cases).
 
 ## Minimal styling classes
 

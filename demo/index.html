@@ -53,13 +53,18 @@
       <p>Woot, you can take the content of a hidden <code tabindex="0">div</code> (and test the focus trap).</p>
     </div>
     
+ <p>
+ 	<button class="js-tooltip button" data-tooltip-prefix-class="simple-left-animated" data-tooltip-text="It is fast and beautiful!" data-tooltip-title="Cool" data-tooltip-close-text="Close it" data-tooltip-close-title="Close it please">
+    Show me one, but animated
+  </button>
+ </p>
   
- <p><button class="js-tooltip button" data-tooltip-prefix-class="left-tooltip" data-tooltip-content-id="informations_other" data-tooltip-title="It’s easy to customize" data-tooltip-close-text="Close it" data-tooltip-close-title="Close this window" data-tooltip-close-img="blackcancel.svg">It’s easy to customize</button></p>
+ <p><button class="js-tooltip button" data-tooltip-prefix-class="left-tooltip" data-tooltip-content-id="informations_other" data-tooltip-title="It’s easy to customize" data-tooltip-close-text="Close it" data-tooltip-close-title="Close this window" data-tooltip-close-img="blackcancel.svg" data-tooltip-focus-toid="gimmefocusplease">It’s easy to customize (and giving focus to an element in the modal tooltip)</button></p>
  
   
   <div id="informations_other" class="hidden">
      <p>It’s so easy.</p>
-     <p>Styling modal components can be made for responsive websites (try to resize).</p>
+     <p tabindex="0" id="gimmefocusplease">Styling modal components can be made for responsive websites (try to resize).</p>
     </div>
   
   <p><a href="#cc_content" class="js-tooltip cc_example" data-tooltip-prefix-class="fixed-tooltip" data-tooltip-content-id="cc_content" data-tooltip-title="Cool!" data-tooltip-close-text="Close it" data-tooltip-close-title="Close this window" data-tooltip-close-img="close.svg">C<span class="invisible">ookie </span>C<span class="invisible">ontrol</span>?</a></p>

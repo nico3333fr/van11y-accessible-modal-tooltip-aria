@@ -22,6 +22,7 @@
     var MODAL_TOOLTIP_TEXT_ATTR = 'data-tooltip-text';
     var MODAL_TOOLTIP_CONTENT_ID_ATTR = 'data-tooltip-content-id';
     var MODAL_TOOLTIP_TITLE_ATTR = 'data-tooltip-title';
+    var MODAL_TOOLTIP_TO_ATTR = 'data-tooltip-focus-toid';
     var MODAL_TOOLTIP_CLOSE_TEXT_ATTR = 'data-tooltip-close-text';
     var MODAL_TOOLTIP_CLOSE_TITLE_ATTR = 'data-tooltip-close-title';
     var MODAL_TOOLTIP_CLOSE_IMG_ATTR = 'data-tooltip-close-img';
@@ -35,6 +36,7 @@
     var MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID = 'data-content-back-id';
     var MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID = 'data-focus-back';
 
+    var MODAL_TOOLTIP_CONTENT_WRAPPER_CLASS_SUFFIX = 'tooltip__wrapper';
     var MODAL_TOOLTIP_CONTENT_CLASS_SUFFIX = 'tooltip__content';
     var MODAL_TOOLTIP_CONTENT_JS_ID = 'js-tooltip-content';
 
@@ -119,6 +121,7 @@
 
         var id = MODAL_TOOLTIP_DIALOG_JS_ID;
         var modalTooltipClassName = config.modalTooltipPrefixClass + MODAL_TOOLTIP_CLASS_SUFFIX;
+        var modalTooltipClassWrapper = config.modalTooltipPrefixClass + MODAL_TOOLTIP_CONTENT_WRAPPER_CLASS_SUFFIX;
         var buttonCloseClassName = config.modalTooltipPrefixClass + MODAL_TOOLTIP_BUTTON_CLASS_SUFFIX;
         var buttonCloseInner = config.modalTooltipCloseImgPath ? '<img src="' + config.modalTooltipCloseImgPath + '" alt="' + config.modalTooltipCloseText + '" class="' + MODAL_TOOLTIP_CLOSE_IMG_CLASS_SUFFIX + '" />' : '<span class="' + MODAL_TOOLTIP_CLOSE_TEXT_CLASS_SUFFIX + '">\n              ' + config.modalTooltipCloseText + '\n             </span>';
         var contentClassName = config.modalTooltipPrefixClass + MODAL_TOOLTIP_CONTENT_CLASS_SUFFIX;
@@ -140,7 +143,7 @@
             content = '<' + MODAL_TOOLTIP_CONTENT_TEXT_ONLY_WRAPPER + '>\n                            ' + content + '\n                       </' + MODAL_TOOLTIP_CONTENT_TEXT_ONLY_WRAPPER + '>';
         }
 
-        return '<dialog id="' + id + '" class="' + modalTooltipClassName + ' ' + MODAL_TOOLTIP_DIALOG_JS_CLASS + '" ' + ATTR_ROLE + '="' + MODAL_TOOLTIP_ROLE + '" ' + ATTR_OPEN + '  ' + ATTR_LABELLEDBY + '="' + MODAL_TOOLTIP_TITLE_ID + '">\n                  <div role="document">\n                    ' + button_close + '\n                    <div class="' + contentClassName + '">\n                      ' + title + '\n                      ' + content + '\n                    </div>\n                  </div>\n                </dialog>';
+        return '<dialog id="' + id + '" class="' + modalTooltipClassName + ' ' + MODAL_TOOLTIP_DIALOG_JS_CLASS + '" ' + ATTR_ROLE + '="' + MODAL_TOOLTIP_ROLE + '" ' + ATTR_OPEN + ' ' + ATTR_LABELLEDBY + '="' + MODAL_TOOLTIP_TITLE_ID + '">\n                  <div role="document" class="' + modalTooltipClassWrapper + '">\n                    ' + button_close + '\n                    <div class="' + contentClassName + '">\n                      ' + title + '\n                      ' + content + '\n                    </div>\n                  </div>\n                </dialog>';
     };
 
     var closeModalTooltip = function closeModalTooltip(config) {
@@ -210,6 +213,7 @@
                             var modalTooltipCloseText = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) : '';
                             var modalTooltipCloseTitle = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) : modalTooltipCloseText;
                             var modalTooltipCloseImgPath = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) : '';
+                            var modalTooltipGiveFocusToId = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_TO_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_TO_ATTR) : '';
 
                             var modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
                             // if already a modal tooltip opened, we close it
@@ -249,9 +253,18 @@
                             }, 50);
                             // fix for Chrome bug resolution
                             setTimeout(function () {
-                                // give focus to close button
+                                // give focus to close button or specified element
                                 var closeButton = findById(MODAL_TOOLTIP_BUTTON_JS_ID);
-                                closeButton.focus();
+                                if (modalTooltipGiveFocusToId !== '') {
+                                    var focusTo = findById(modalTooltipGiveFocusToId);
+                                    if (focusTo) {
+                                        focusTo.focus();
+                                    } else {
+                                        closeButton.focus();
+                                    }
+                                } else {
+                                    closeButton.focus();
+                                }
                             }, 51);
 
                             // add class is-active to launcher

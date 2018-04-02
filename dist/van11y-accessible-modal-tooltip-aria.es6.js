@@ -20,6 +20,7 @@
     const MODAL_TOOLTIP_TEXT_ATTR = 'data-tooltip-text';
     const MODAL_TOOLTIP_CONTENT_ID_ATTR = 'data-tooltip-content-id';
     const MODAL_TOOLTIP_TITLE_ATTR = 'data-tooltip-title';
+    const MODAL_TOOLTIP_TO_ATTR = 'data-tooltip-focus-toid';
     const MODAL_TOOLTIP_CLOSE_TEXT_ATTR = 'data-tooltip-close-text';
     const MODAL_TOOLTIP_CLOSE_TITLE_ATTR = 'data-tooltip-close-title';
     const MODAL_TOOLTIP_CLOSE_IMG_ATTR = 'data-tooltip-close-img';
@@ -33,6 +34,7 @@
     const MODAL_TOOLTIP_BUTTON_CONTENT_BACK_ID = 'data-content-back-id';
     const MODAL_TOOLTIP_BUTTON_FOCUS_BACK_ID = 'data-focus-back';
 
+    const MODAL_TOOLTIP_CONTENT_WRAPPER_CLASS_SUFFIX = 'tooltip__wrapper';
     const MODAL_TOOLTIP_CONTENT_CLASS_SUFFIX = 'tooltip__content';
     const MODAL_TOOLTIP_CONTENT_JS_ID = 'js-tooltip-content';
 
@@ -116,6 +118,7 @@
 
         let id = MODAL_TOOLTIP_DIALOG_JS_ID;
         let modalTooltipClassName = config.modalTooltipPrefixClass + MODAL_TOOLTIP_CLASS_SUFFIX;
+        let modalTooltipClassWrapper = config.modalTooltipPrefixClass + MODAL_TOOLTIP_CONTENT_WRAPPER_CLASS_SUFFIX;
         let buttonCloseClassName = config.modalTooltipPrefixClass + MODAL_TOOLTIP_BUTTON_CLASS_SUFFIX;
         let buttonCloseInner = config.modalTooltipCloseImgPath ?
             `<img src="${config.modalTooltipCloseImgPath}" alt="${config.modalTooltipCloseText}" class="${MODAL_TOOLTIP_CLOSE_IMG_CLASS_SUFFIX}" />` :
@@ -152,8 +155,8 @@
         }
 
 
-        return `<dialog id="${id}" class="${modalTooltipClassName} ${MODAL_TOOLTIP_DIALOG_JS_CLASS}" ${ATTR_ROLE}="${MODAL_TOOLTIP_ROLE}" ${ATTR_OPEN}  ${ATTR_LABELLEDBY}="${MODAL_TOOLTIP_TITLE_ID}">
-                  <div role="document">
+        return `<dialog id="${id}" class="${modalTooltipClassName} ${MODAL_TOOLTIP_DIALOG_JS_CLASS}" ${ATTR_ROLE}="${MODAL_TOOLTIP_ROLE}" ${ATTR_OPEN} ${ATTR_LABELLEDBY}="${MODAL_TOOLTIP_TITLE_ID}">
+                  <div role="document" class="${modalTooltipClassWrapper}">
                     ${button_close}
                     <div class="${contentClassName}">
                       ${title}
@@ -237,6 +240,7 @@
                             let modalTooltipCloseText = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TEXT_ATTR) : '';
                             let modalTooltipCloseTitle = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_TITLE_ATTR) : modalTooltipCloseText;
                             let modalTooltipCloseImgPath = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_CLOSE_IMG_ATTR) : '';
+                            let modalTooltipGiveFocusToId = modalTooltipLauncher.hasAttribute(MODAL_TOOLTIP_TO_ATTR) === true ? modalTooltipLauncher.getAttribute(MODAL_TOOLTIP_TO_ATTR) : '';
 
                             let modalTooltip = findById(MODAL_TOOLTIP_DIALOG_JS_ID);
                             // if already a modal tooltip opened, we close it
@@ -277,9 +281,18 @@
                             }, 50);
                             // fix for Chrome bug resolution
                             setTimeout(function() {
-                                // give focus to close button
+                                // give focus to close button or specified element
                                 let closeButton = findById(MODAL_TOOLTIP_BUTTON_JS_ID)
-                                closeButton.focus();
+                                if (modalTooltipGiveFocusToId !== '') {
+                                    let focusTo = findById(modalTooltipGiveFocusToId);
+                                    if (focusTo) {
+                                        focusTo.focus();
+                                    } else {
+                                        closeButton.focus();
+                                    }
+                                } else {
+                                    closeButton.focus();
+                                }
                             }, 51);
 
                             // add class is-active to launcher

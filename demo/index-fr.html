@@ -53,13 +53,18 @@
       <p>Waouh, on peut prendre le contenu d’une <code tabindex="0">div</code> cachée (et tester le piège à focus clavier).</p>
     </div>
     
+ <p>
+ 	<button class="js-tooltip button" data-tooltip-prefix-class="simple-left-animated" data-tooltip-text="C’est rapide et beau !" data-tooltip-title="Cool" data-tooltip-close-text="Fermer" data-tooltip-close-title="Fermer cela">
+    Montre-moi en un, mais animé
+  </button>
+ </p>
   
- <p><button class="js-tooltip button" data-tooltip-prefix-class="left-tooltip" data-tooltip-content-id="informations_other" data-tooltip-title="C’est facile à customiser" data-tooltip-close-text="Fermer" data-tooltip-close-title="Fermer cette fenêtre" data-tooltip-close-img="blackcancel.svg">C’est si facile</button></p>
+ <p><button class="js-tooltip button" data-tooltip-prefix-class="left-tooltip" data-tooltip-content-id="informations_other" data-tooltip-title="C’est facile à customiser" data-tooltip-close-text="Fermer" data-tooltip-close-title="Fermer cette fenêtre" data-tooltip-close-img="blackcancel.svg" data-tooltip-focus-toid="gimmefocusplease">C’est si facile (donne le focus à un élément dans le tooltip modal)</button></p>
  
   
   <div id="informations_other" class="hidden">
      <p>C’est si facile.</p>
-     <p>Styler des composants de modale peut être fait pour des sites responsive (essayez de redimensionner).</p>
+     <p tabindex="0" id="gimmefocusplease">Styler des composants de modale peut être fait pour des sites responsive (essayez de redimensionner).</p>
     </div>
   
   <p><a href="#cc_content" class="js-tooltip cc_example" data-tooltip-prefix-class="fixed-tooltip" data-tooltip-content-id="cc_content" data-tooltip-title="Cool&#8239;!" data-tooltip-close-text="Fermer" data-tooltip-close-title="Fermer cette info-bulle" data-tooltip-close-img="close.svg" lang="en" xml:lang="en">C<span class="invisible">ookie </span>C<span class="invisible">ontrol</span>&#8239;?</a></p>

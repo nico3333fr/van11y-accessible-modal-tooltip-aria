@@ -168,11 +168,13 @@ dialog {
 }
 
 .simple-left-container,
+.simple-left-animated-container,
 .left-tooltip-container {
   position: relative;
 }
  
-.simple-left-tooltip {
+.simple-left-tooltip,
+.simple-left-animated-tooltip {
   position: absolute;
   z-index: 666;
   top: 80%;
@@ -186,14 +188,50 @@ dialog {
   text-align: left;
 }
 
-.simple-left-tooltip__title {
+.simple-left-animated-tooltip {
+  -webkit-animation: pop ease .5s 1 normal ;
+          animation: pop ease .5s 1 normal ;
+}
+@-webkit-keyframes pop {
+  0% {
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	  -webkit-transform: scale(0);
+	          transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	-webkit-transform: scale(1);
+	        transform: scale(1);
+  }
+}
+@keyframes pop {
+  0% {
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	  -webkit-transform: scale(0);
+	          transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	-webkit-transform: scale(1);
+	        transform: scale(1);
+  }
+}
+
+.simple-left-tooltip__title,
+.simple-left-animated-tooltip__title {
   margin: 0;
   line-height: 1;
 }
-.simple-left-tooltip p {
+.simple-left-tooltip p,
+.simple-left-animated-tooltip p {
   font-size: 1em;
 }
-.simple-left-tooltip__close {
+.simple-left-tooltip__close,
+.simple-left-animated-tooltip__close {
   float: right;
   border: 0;
   /** fix typo inputs **/
@@ -205,11 +243,16 @@ dialog {
 }
 .simple-left-tooltip__close:focus,
 .simple-left-tooltip__close:hover,
-.simple-left-tooltip__close:active {
+.simple-left-tooltip__close:active,
+.simple-left-animated-tooltip__close:focus,
+.simple-left-animated-tooltip__close:hover,
+.simple-left-animated-tooltip__close:active {
   outline: 1px dotted #fff;  
 }
 .simple-left-tooltip__close:hover,
-.simple-left-tooltip__close:active {
+.simple-left-tooltip__close:active,
+.simple-left-animated-tooltip__close:hover,
+.simple-left-animated-tooltip__close:active  {
   background: #4d287f;
 }
 
