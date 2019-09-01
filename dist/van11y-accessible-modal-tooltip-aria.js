@@ -46,7 +46,7 @@
     var MODAL_TOOLTIP_TITLE_ID = 'tooltip-title';
     var MODAL_TOOLTIP_TITLE_CLASS_SUFFIX = 'tooltip__title';
 
-    var FOCUSABLE_ELEMENTS_STRING = "a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]";
+    var FOCUSABLE_ELEMENTS_STRING = "a[href], area[href], input:not([type='hidden']):not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]";
 
     var MODAL_TOOLTIP_DIALOG_JS_ID = 'js-dialogtooltip';
     var MODAL_TOOLTIP_DIALOG_JS_CLASS = 'js-dialogtooltip';
@@ -167,7 +167,7 @@
 
     /** Find all modal tooltips inside a container
      * @param  {Node} node Default document
-     * @return {Array}      
+     * @return {Array}
      */
     var $listModalTooltips = function $listModalTooltips() {
         var node = arguments.length <= 0 || arguments[0] === undefined ? doc : arguments[0];
@@ -176,8 +176,8 @@
 
     /**
      * Build modal tooltips for a container
-     * @param  {Node} node 
-     * @param  {addListeners} boolean 
+     * @param  {Node} node
+     * @param  {addListeners} boolean
      */
     var attach = function attach(node) {
         var addListeners = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
@@ -335,7 +335,7 @@
                             modalTooltipLauncher.focus();
                         }
 
-                        // tab or Maj Tab in modal tooltip => capture focus            
+                        // tab or Maj Tab in modal tooltip => capture focus
                         if (e.keyCode === 9 && $listFocusables.indexOf(e.target) >= 0) {
 
                             // maj-tab on first element focusable => focus on last

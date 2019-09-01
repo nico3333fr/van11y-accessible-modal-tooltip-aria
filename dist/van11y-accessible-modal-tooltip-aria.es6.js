@@ -44,7 +44,7 @@
     const MODAL_TOOLTIP_TITLE_ID = 'tooltip-title';
     const MODAL_TOOLTIP_TITLE_CLASS_SUFFIX = 'tooltip__title';
 
-    const FOCUSABLE_ELEMENTS_STRING = "a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]";
+    const FOCUSABLE_ELEMENTS_STRING = "a[href], area[href], input:not([type='hidden']):not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]";
 
     const MODAL_TOOLTIP_DIALOG_JS_ID = 'js-dialogtooltip';
     const MODAL_TOOLTIP_DIALOG_JS_CLASS = 'js-dialogtooltip';
@@ -190,15 +190,15 @@
 
     /** Find all modal tooltips inside a container
      * @param  {Node} node Default document
-     * @return {Array}      
+     * @return {Array}
      */
     const $listModalTooltips = (node = doc) => [].slice.call(node.querySelectorAll('.' + MODAL_TOOLTIP_JS_CLASS));
 
 
     /**
      * Build modal tooltips for a container
-     * @param  {Node} node 
-     * @param  {addListeners} boolean 
+     * @param  {Node} node
+     * @param  {addListeners} boolean
      */
     const attach = (node, addListeners = true) => {
 
@@ -210,7 +210,7 @@
 
                 modal_tooltip_node.setAttribute('id', MODAL_TOOLTIP_ID_PREFIX + iLisible);
 
-                // wrap element in 
+                // wrap element in
                 let wrapper = doc.createElement(MODAL_TOOLTIP_TAG_WRAPPER);
                 wrapper.setAttribute('class', modalTooltipPrefixClass + MODAL_TOOLTIP_WRAPPER_CLASS_SUFFIX);
                 wrapOutside(modal_tooltip_node, wrapper);
@@ -356,7 +356,7 @@
                             let modalTooltipLauncher = findById(modalTooltipFocusBackId);
                             let $listFocusables = [].slice.call(modalTooltip.querySelectorAll(FOCUSABLE_ELEMENTS_STRING));
 
-                            // esc 
+                            // esc
                             if (e.keyCode === 27) {
 
                                 closeModalTooltip({
@@ -371,7 +371,7 @@
                                 modalTooltipLauncher.focus();
                             }
 
-                            // tab or Maj Tab in modal tooltip => capture focus             
+                            // tab or Maj Tab in modal tooltip => capture focus
                             if (e.keyCode === 9 && $listFocusables.indexOf(e.target) >= 0) {
 
                                 // maj-tab on first element focusable => focus on last
